@@ -39,6 +39,11 @@ int main() {
 注意，这个合约中我们引入了 `pvm.h`，使用了其中的 `pvm_load_args` 和 `pvm_ret` 函数。
 `pvm.h` 这个文件中包含了我们与链交互所需要的所有函数。这些函数是通过系统调用实现的，我们将在下节进行详细讲解。
 
+## pvm
+
+pvm 支持合约向 ckb-vm 外部发起调用的系统函数集合。在 ckb-vm 内部，你无法直接向链发起任何调用，包括获取 Block，Receipt 这样常用的方法。
+所有的对链请求，都必须经过 ckb-vm 的 ecall 指令集完成。pvm 替开发者封装了所有对链请求的逻辑，导出为 C 函数，供合约调用
+
 ## 系统调用
 
 由于 CKB-VM 只是一个 RISC-V 指令集解释器。要实现合约的复杂逻辑，必然要与链进行交互，如解析参数，返回结果，获取链/交易上下文，操作合约状态等。因此我们在 risc-v service 中用系统调用实现了这些交互功能。
@@ -149,8 +154,6 @@ RISC-V service 的部署合约接口签名如下：
 ```rust
 pub enum InterpreterType {
     Binary = 1,
-    #[cfg(debug_assertions)]
-    Duktape = 2,
 }
 
 pub struct DeployPayload {
@@ -169,7 +172,7 @@ pub struct DeployResp {
 
 - 参数
   - code：合约代码，使用 hex 编码
-  - intp_type：生产环境目前仅支持 `Binary`，即 ELF 二进制文件格式，dev 和 test 环境可以使用 `Duktape`，即使用 js 代码作为合约代码
+  - intp_type：生产环境目前仅支持 `Binary`，即 ELF 二进制文件格式
   - init_args：初始化参数
 - 返回值
   - address：合约地址
@@ -196,20 +199,22 @@ $ muta-cli repl
 > receipt = await client.getReceipt(txHash)
 { txHash:
    '4a8baf53d59bed2ef016526030203a0d15ed838e0dfcc717495b56142cc0c77a',
-  height: '0000000000000510',
-  cyclesUsed: '0000000000024e50',
+  height: '0x0000000000000510',
+  cyclesUsed: '0x0000000000024e50',
   events: [],
   stateRoot:
-   '64b18096bf322b74d3f6ae206d5fe3154fa19a876fe849130f9b5f70d627c850',
+   '0x64b18096bf322b74d3f6ae206d5fe3154fa19a876fe849130f9b5f70d627c850',
   response:
    { serviceName: 'riscv',
      method: 'deploy',
-     ret:
-      '{"address":"7598a35834c5c1f544edd9ba48013c361f71bf3b","init_ret":""}',
-     isError: false } }
+     response:{
+        code:'0x00',
+        succeed_data:'{"address":"7598a35834c5c1f544edd9ba48013c361f71bf3b","init_ret":""}',
+        error_message:''
+     }
+    }
+}
 
-> address = JSON.parse(receipt.response.ret).address
-'7598a35834c5c1f544edd9ba48013c361f71bf3b'
 ```
 
 ## 交互
@@ -238,8 +243,13 @@ RISC-V service 提供了两种 `exec` 和 `call` 两个交互接口。前者为�
   response:
    { serviceName: 'riscv',
      method: 'exec',
-     ret: '""',
-     isError: false } }
+     response:{
+             code:'0x00',
+             succeed_data:'',
+             error_message:''
+     }
+   }
+ }
 ```
 
 ## 测试
@@ -249,7 +259,7 @@ RISC-V service 提供了两种 `exec` 和 `call` 两个交互接口。前者为�
 如果读者熟悉 RUST，可以通过写 RUST test 或者 binary，来模拟交易直接执行合约代码。
 使用这种方法进行测试无需起链。
 
-参见：<https://github.com/HuobiGroup/huobi-chain/blob/master/services/riscv/src/tests/mod.rs#L45>
+参见：<https://github.com/HuobiGroup/huobi-chain/blob/master/services/riscv/src/tests/mod.rs>
 
 另一种方法是，在本地起一条单节点测试链，通过 muta-sdk 进行部署和调用，在其中加入测试逻辑，保证代码的正确性。
 
