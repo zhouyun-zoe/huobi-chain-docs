@@ -53,7 +53,7 @@ pub struct SignedTransaction {
 
 ## 接口
 
-1. 创建多签账户
+1.创建多签账户
 
 ```rust
 fn generate_account(&mut self, ctx: ServiceContext, payload: GenerateMultiSigAccountPayload) -> ServiceResponse<GenerateMultiSigAccountResponse>;
@@ -61,6 +61,7 @@ fn generate_account(&mut self, ctx: ServiceContext, payload: GenerateMultiSigAcc
 // 参数
 pub struct GenerateMultiSigAccountPayload {
     pub owner:            Address,
+    pub autonomy:         bool,
     pub addr_with_weight: Vec<AddressWithWeight>,
     pub threshold:        u32,
     pub memo:             String,
@@ -76,25 +77,7 @@ pub struct GenerateMultiSigAccountResponse {
 }
 ```
 
-GraphiQL 示例：
-
-```graphql
-mutation generate_account{
-  unsafeSendTransaction(inputRaw: {
-    serviceName:"multi_signature",
-    method:"set_admin",
-    payload:"{\"owner\":\"0x83dba2ed0eb6ffcc256250ef6e1b6d15b3f68e89\",\"addr_with_weight\":[{\"address\":\"0x639f87c481224a9ab7480828e86f76e39ca56865\",\"weight\":1},{\"address\":\"0x1459d1711eae368e6d685e5169b76e917202774f\",\"weight\":1},{\"address\":\"0x0e1655a22d6ca92928f5ce37c6b8b2845a0721bb\",\"weight\":1},{\"address\":\"0xe6533a1db7a4aad25922672eac1d22fa14e70fe8\",\"weight\":1}],\"threshold\":3,\"memo\":\"multi-signature-01\"}",
-    timeout:"0x14",
-    nonce:"0x9db2d7efe2b61a28827e4836e2775d913a442ed2f9096ca1233e479607c27cf7",
-    chainId:"0xb6a4d7da21443f5e816e8700eea87610e6d769657d6b8ec73028457bf2ca4036",
-    cyclesPrice:"0x9999",
-    cyclesLimit:"0x9999",
-    }, inputPrivkey: "0x45c56be699dca666191ad3446897e0f480da234da896270202514a0e1a587c3f"
-  )
-}
-```
-
-2. 查询多签账户
+2.查询多签账户
 
 ```rust
 fn get_account_from_address(&self, _ctx: ServiceContext, payload: GetMultiSigAccountPayload) -> ServiceResponse<GetMultiSigAccountResponse>;
@@ -117,23 +100,8 @@ pub struct MultiSigPermission {
 }
 ```
 
-GraphiQL 示例：
 
-```graphql
-query get_account_from_address{
-  queryService(
-  caller: "0x016cbd9ee47a255a6f68882918dcdd9e14e6bee1"
-  serviceName: "multi_signature"
-  method: "get_account_from_address"
-  payload: "{\"multi_sig_address\":\"0xfe5a6c9959c49a6ef3546282318c17ce121db6ea\"}"
-  ){
-    ret,
-    isError
-  }
-}
-```
-
-3. 创建更新多签账户
+3.创建更新多签账户
 
 ```rust
 // 需要 admin 权限
@@ -142,31 +110,9 @@ fn update_account(&mut self, ctx: ServiceContext, payload: UpdateAccountPayload,
 // 参数
 pub struct UpdateAccountPayload {
     pub account_address:  Address,
-    pub new_account_info: GenerateMultiSigAccountPayload,
-}
-
-pub struct GenerateMultiSigAccountPayload {
     pub owner:            Address,
     pub addr_with_weight: Vec<AddressWithWeight>,
     pub threshold:        u32,
     pub memo:             String,
-}
-```
-
-GraphiQL 示例：
-
-```graphql
-mutation update_account{
-  unsafeSendTransaction(inputRaw: {
-    serviceName:"multi_signature",
-    method:"set_admin",
-    payload:"{\"account_address\":\"0x4537b38aeb100de3b9d4483c7f5e399e327a5246\",\"new_account_info\":{\"owner\":\"0x007c20181e1ad8f85027253d4afae34155ceaaa3\",\"addr_with_weight\":[{\"address\":\"0x13601c39ec94a3f88728403bff3d945006e2271f\",\"weight\":1},{\"address\":\"0xa4bf852474398106b121e90d40e2c27fd083b257\",\"weight\":1},{\"address\":\"0x4f5ae65ef07c14f0a13dfee4054c476cc1503517\",\"weight\":1},{\"address\":\"0x87ffd1bec3236c854f1523bb55427952fde4a48d\",\"weight\":1}],\"threshold\":3,\"memo\":\"multi-signature-01\"}}",
-    timeout:"0x14",
-    nonce:"0x9db2d7efe2b61a28827e4836e2775d913a442ed2f9096ca1233e479607c27cf7",
-    chainId:"0xb6a4d7da21443f5e816e8700eea87610e6d769657d6b8ec73028457bf2ca4036",
-    cyclesPrice:"0x9999",
-    cyclesLimit:"0x9999",
-    }, inputPrivkey: "0x45c56be699dca666191ad3446897e0f480da234da896270202514a0e1a587c3f"
-  )
 }
 ```

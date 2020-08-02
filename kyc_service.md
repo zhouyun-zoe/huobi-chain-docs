@@ -74,45 +74,21 @@ KYC机构主动修改用户资质
 
 ```rust
 #[read]
-    fn get_orgs(&self, ctx: ServiceContext, _: String) -> ServiceResponse<Vec<OrgName>>{}
-```
-
-GraphiQL 示例：
-
-```graphql
-query status{
-  queryService(
-  caller: "0x016cbd9ee47a255a6f68882918dcdd9e14e6bee1"
-  serviceName: "kyc"
-  method: "get_orgs"
-  payload:"",
-  ){
-    ret,
-    isError
-  }
-}
+fn get_orgs(&self, ctx: ServiceContext) -> ServiceResponse<Vec<OrgName>>{}
 ```
 
 ### 2. 获得一个KYC机构的信息.
 
 ```rust
 #[read]
-    fn get_org_info(&self, ctx: ServiceContext, org_name: OrgName, ) -> ServiceResponse<Option<KycOrgInfo>> {}
-```
+fn get_org_info(&self, ctx: ServiceContext, org_name: OrgName, ) -> ServiceResponse<Option<KycOrgInfo>> {}
 
-GraphiQL 示例：
-
-```graphql
-query status{
-  queryService(
-  caller: "0x016cbd9ee47a255a6f68882918dcdd9e14e6bee1"
-  serviceName: "kyc"
-  method: "get_org_info"
-  payload:"your org name",
-  ){
-    ret,
-    isError
-  }
+pub struct KycOrgInfo {
+    pub name:           OrgName,
+    pub description:    String,
+    pub admin:          Address,
+    pub supported_tags: Vec<TagName>,
+    pub approved:       bool,
 }
 ```
 
@@ -120,93 +96,44 @@ query status{
 
 ```rust
 #[read]
-    fn get_org_supported_tags( &self, ctx: ServiceContext, org_name: OrgName,) -> ServiceResponse<Vec<TagName>>{}
-```
-
-GraphiQL 示例：
-
-```graphql
-query status{
-  queryService(
-  caller: "0x016cbd9ee47a255a6f68882918dcdd9e14e6bee1"
-  serviceName: "kyc"
-  method: "get_org_supported_tags"
-  payload:"your org name",
-  ){
-    ret,
-    isError
-  }
-}
+fn get_org_supported_tags( &self, ctx: ServiceContext, org_name: OrgName,) -> ServiceResponse<Vec<TagName>>{}
 ```
 
 ### 4. 获得一个用户 Address 在某个KYC机构下的TAG信息.
 
 ```rust
 #[read]
-    fn get_user_tags( &self, ctx: ServiceContext, payload: GetUserTags, ) -> ServiceResponse<HashMap<TagName, FixedTagList>>{}
-```
+fn get_user_tags( &self, ctx: ServiceContext, payload: GetUserTags, ) -> ServiceResponse<HashMap<TagName, FixedTagList>>{}
 
-GraphiQL 示例：
-
-```graphql
-query status{
-  queryService(
-  caller: "0x016cbd9ee47a255a6f68882918dcdd9e14e6bee1"
-  serviceName: "kyc"
-  method: "get_user_tags"
-  payload:"{\"org_name\":\"your org name\",\"user\":\"0x016cbd9ee47a255a6f68882918dcdd9e14e6bee1\"}",
-  ){
-    ret,
-    isError
-  }
+pub struct GetUserTags {
+    pub org_name: OrgName,
+    pub user:     Address,
 }
+
 ```
 
 ### 5. 基于一个用户 Address,运行一个KYC表达式.
 
 ```rust
 #[read]
-    fn eval_user_tag_expression( &self, ctx: ServiceContext, payload: EvalUserTagExpression, ) -> ServiceResponse<bool>{}
-```
+fn eval_user_tag_expression( &self, ctx: ServiceContext, payload: EvalUserTagExpression, ) -> ServiceResponse<bool>{}
 
-GraphiQL 示例：
-
-```graphql
-query status{
-  queryService(
-  caller: "0x016cbd9ee47a255a6f68882918dcdd9e14e6bee1"
-  serviceName: "kyc"
-  method: "eval_user_tag_expression"
-  payload:"{\"user\":\"0x016cbd9ee47a255a6f68882918dcdd9e14e6bee1\",\"expression\":\"KYC expression, more details later\"}",
-  ){
-    ret,
-    isError
-  }
+pub struct EvalUserTagExpression {
+    pub user:       Address,
+    pub expression: String,
 }
 ```
+
 
 ### 6. 批准/取消批准一个KYC机构
 
 ```rust
 #[write]
-    fn change_org_approved( &mut self, ctx: ServiceContext, payload: ChangeOrgApproved, ) -> ServiceResponse<()>{}
-```
+fn change_org_approved( &mut self, ctx: ServiceContext, payload: ChangeOrgApproved, ) -> ServiceResponse<()>{}
 
-GraphiQL 示例：
-
-```graphql
-mutation update_metadata{
-  unsafeSendTransaction(inputRaw: {
-    serviceName:"kyc",
-    method:"change_org_approved",
-    payload:"{\"org_name\": \"your org name\",\"approved\": false}",
-    timeout:"0xbe",
-    nonce:"0x9db2d7efe2b61a28827e4836e2775d913a442ed2f9096ca1233e479607c27cf7",
-    chainId:"0xb6a4d7da21443f5e816e8700eea87610e6d769657d6b8ec73028457bf2ca4036",
-    cyclesPrice:"0x9999",
-    cyclesLimit:"0x9999",
-    }, inputPrivkey: "0x30269d47fcf602b889243722b666881bf953f1213228363d34cf04ddcd51dfd2"
-  )
+pub struct ChangeOrgApproved {
+    pub org_name: OrgName,
+    pub approved: bool,
 }
 ```
 
@@ -214,24 +141,14 @@ mutation update_metadata{
 
 ```rust
 #[write]
-    fn change_service_admin( &mut self, ctx: ServiceContext, new_admin: Address, ) -> ServiceResponse<()>{}
-```
+fn change_service_admin(
+        &mut self,
+        ctx: ServiceContext,
+        payload: ChangeServiceAdmin,
+    ) -> ServiceResponse<()>{}
 
-GraphiQL 示例：
-
-```graphql
-mutation update_metadata{
-  unsafeSendTransaction(inputRaw: {
-    serviceName:"kyc",
-    method:"change_service_admin",
-    payload:"0x016cbd9ee47a255a6f68882918dcdd9e14e6bee1",
-    timeout:"0xbe",
-    nonce:"0x9db2d7efe2b61a28827e4836e2775d913a442ed2f9096ca1233e479607c27cf7",
-    chainId:"0xb6a4d7da21443f5e816e8700eea87610e6d769657d6b8ec73028457bf2ca4036",
-    cyclesPrice:"0x9999",
-    cyclesLimit:"0x9999",
-    }, inputPrivkey: "0x30269d47fcf602b889243722b666881bf953f1213228363d34cf04ddcd51dfd2"
-  )
+pub struct ChangeServiceAdmin {
+    pub new_admin: Address,
 }
 ```
 
@@ -239,24 +156,11 @@ mutation update_metadata{
 
 ```rust
 #[write]
-    fn change_org_admin( &mut self, ctx: ServiceContext, payload: ChangeOrgAdmin, ) -> ServiceResponse<()>{}
-```
+fn change_org_admin( &mut self, ctx: ServiceContext, payload: ChangeOrgAdmin, ) -> ServiceResponse<()>{}
 
-GraphiQL 示例：
-
-```graphql
-mutation update_metadata{
-  unsafeSendTransaction(inputRaw: {
-    serviceName:"kyc",
-    method:"change_org_admin",
-    payload:"{\"name\": \"your org name\",\"new_admin\": \"0x016cbd9ee47a255a6f68882918dcdd9e14e6bee1\"}",
-    timeout:"0xbe",
-    nonce:"0x9db2d7efe2b61a28827e4836e2775d913a442ed2f9096ca1233e479607c27cf7",
-    chainId:"0xb6a4d7da21443f5e816e8700eea87610e6d769657d6b8ec73028457bf2ca4036",
-    cyclesPrice:"0x9999",
-    cyclesLimit:"0x9999",
-    }, inputPrivkey: "0x30269d47fcf602b889243722b666881bf953f1213228363d34cf04ddcd51dfd2"
-  )
+pub struct ChangeOrgAdmin {
+    pub name:      OrgName,
+    pub new_admin: Address,
 }
 ```
 
@@ -264,24 +168,13 @@ mutation update_metadata{
 
 ```rust
 #[write]
-    fn register_org( &mut self, ctx: ServiceContext, new_org: RegisterNewOrg, ) -> ServiceResponse<()>{}
-```
+fn register_org( &mut self, ctx: ServiceContext, new_org: RegisterNewOrg, ) -> ServiceResponse<()>{}
 
-GraphiQL 示例：
-
-```graphql
-mutation update_metadata{
-  unsafeSendTransaction(inputRaw: {
-    serviceName:"kyc",
-    method:"register_org",
-    payload:"{\"name\": \"your org name\",\"description\": \"bala bala\",\"admin\": \"0x016cbd9ee47a255a6f68882918dcdd9e14e6bee1\",\"supported_tags\":[\"Tag1\",\"Tag2\"]}",
-    timeout:"0xbe",
-    nonce:"0x9db2d7efe2b61a28827e4836e2775d913a442ed2f9096ca1233e479607c27cf7",
-    chainId:"0xb6a4d7da21443f5e816e8700eea87610e6d769657d6b8ec73028457bf2ca4036",
-    cyclesPrice:"0x9999",
-    cyclesLimit:"0x9999",
-    }, inputPrivkey: "0x30269d47fcf602b889243722b666881bf953f1213228363d34cf04ddcd51dfd2"
-  )
+pub struct RegisterNewOrg {
+    pub name:           OrgName,
+    pub description:    String,
+    pub admin:          Address,
+    pub supported_tags: Vec<TagName>,
 }
 ```
 
@@ -289,24 +182,11 @@ mutation update_metadata{
 
 ```rust
 #[write]
-    fn update_supported_tags( &mut self, ctx: ServiceContext, payload: UpdateOrgSupportTags, ) -> ServiceResponse<()>{}
-```
+fn update_supported_tags( &mut self, ctx: ServiceContext, payload: UpdateOrgSupportTags, ) -> ServiceResponse<()>{}
 
-GraphiQL 示例：
-
-```graphql
-mutation update_metadata{
-  unsafeSendTransaction(inputRaw: {
-    serviceName:"kyc",
-    method:"update_supported_tags",
-    payload:"{\"org_name\": \"your org name\",\"supported_tags\":[\"Tag1\",\"Tag2\"]}",
-    timeout:"0xbe",
-    nonce:"0x9db2d7efe2b61a28827e4836e2775d913a442ed2f9096ca1233e479607c27cf7",
-    chainId:"0xb6a4d7da21443f5e816e8700eea87610e6d769657d6b8ec73028457bf2ca4036",
-    cyclesPrice:"0x9999",
-    cyclesLimit:"0x9999",
-    }, inputPrivkey: "0x30269d47fcf602b889243722b666881bf953f1213228363d34cf04ddcd51dfd2"
-  )
+pub struct UpdateOrgSupportTags {
+    pub org_name:       OrgName,
+    pub supported_tags: Vec<TagName>,
 }
 ```
 
@@ -314,23 +194,11 @@ mutation update_metadata{
 
 ```rust
 #[write]
-    fn update_user_tags( &mut self, ctx: ServiceContext, payload: UpdateUserTags, ) -> ServiceResponse<()>{}
-```
+fn update_user_tags( &mut self, ctx: ServiceContext, payload: UpdateUserTags, ) -> ServiceResponse<()>{}
 
-GraphiQL 示例：
-
-```graphql
-mutation update_metadata{
-  unsafeSendTransaction(inputRaw: {
-    serviceName:"kyc",
-    method:"update_user_tags",
-    payload:"{\"org_name\": \"your org name\",\"user\":\"0x016cbd9ee47a255a6f68882918dcdd9e14e6bee1\",\"tags\":{\"Tag1\":[\"Val1\",\"Val2\"]}}",
-    timeout:"0xbe",
-    nonce:"0x9db2d7efe2b61a28827e4836e2775d913a442ed2f9096ca1233e479607c27cf7",
-    chainId:"0xb6a4d7da21443f5e816e8700eea87610e6d769657d6b8ec73028457bf2ca4036",
-    cyclesPrice:"0x9999",
-    cyclesLimit:"0x9999",
-    }, inputPrivkey: "0x30269d47fcf602b889243722b666881bf953f1213228363d34cf04ddcd51dfd2"
-  )
+pub struct UpdateUserTags {
+    pub org_name: OrgName,
+    pub user:     Address,
+    pub tags:     HashMap<TagName, FixedTagList>,
 }
 ```

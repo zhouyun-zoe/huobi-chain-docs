@@ -16,11 +16,14 @@ pub struct Metadata {
     pub propose_ratio:   u64, // 共识 propose 阶段的超时时间与 interval 的比值
     pub prevote_ratio:   u64, // 共识 prevote 阶段的超时时间与 interval 的比值
     pub precommit_ratio: u64, // 共识 precommit 阶段的超时时间与 interval 的比值
-    pub brake_ratio: u64 // 共识重发 choke 的超时时间与 interval 的比值
+    pub brake_ratio:     u64, // 共识重发 choke 的超时时间与 interval 的比值
+    pub tx_num_limit:    u64,
+    pub max_tx_size:     u64,
 }
 
 pub struct ValidatorExtend {
     pub bls_pub_key: Hex,
+    pub pub_key:        Hex,
     pub address:        Address,
     pub propose_weight: u32, //出块权重
     pub vote_weight:    u32, // 投票权重
@@ -36,17 +39,3 @@ fn get_metadata(&self, ctx: ServiceContext) -> ProtocolResult<Metadata>；
 ```
 
 GraphiQL 示例：
-
-```graphql
-query get_metadata{
-  queryService(
-  caller: "0x016cbd9ee47a255a6f68882918dcdd9e14e6bee1"
-  serviceName: "metadata"
-  method: "get_metadata"
-  payload: ""
-  ){
-    ret,
-    isError
-  }
-}
-```
