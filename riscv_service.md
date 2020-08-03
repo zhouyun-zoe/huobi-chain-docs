@@ -112,8 +112,10 @@ pub struct ExecPayload {
   - 授权：grant_deploy_auth
   - 取消授权：revoke_deploy_auth
   - 查看授权：check_deploy_auth
+  
 - payload: 均为上述示例
   - addresses: 要授权的地址列表
+  
 - 返回值
   - grant_deploy_auth 和 revoke_deploy_auth 无返回值
   - check_deploy_auth 返回待检查列表中有权限的地址
