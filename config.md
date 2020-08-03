@@ -125,6 +125,7 @@ payload = '''
    "deny_list": [ "0xd2d268749ffe54def4e2e73e5e06a4ebf0d6f585" ]
 }
 '''
+```
 
 创世块的初始化参数：
 
