@@ -10,6 +10,7 @@
 	- [共识](/overlord.md)
 	- [网络](/network.md)
 	- [存储](/storage.md)
+	- [手续费计算](/calc_fee.md)
 - **Service 介绍**
 	- [概览](/service_overview.md)
 	- [Metadata Service](/metadata_service.md)

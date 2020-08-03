@@ -47,4 +47,5 @@
 ![](./static/arch/parallet.png)
 
 ## Execution Block
+
 ![](./static/arch/execution-block.png)
