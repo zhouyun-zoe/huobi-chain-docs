@@ -53,6 +53,21 @@ pub struct SignedTransaction {
 
 ## 接口
 
+0.genesis，在创世区块创建多签账户
+
+```rust
+#[genesis]
+fn init_genesis(&mut self, payload: InitGenesisPayload);
+
+pub struct InitGenesisPayload {
+    pub address:          Address, // 创世区块内创建的多签地址，可以自由地指定地址
+    pub owner:            Address,
+    pub addr_with_weight: Vec<AddressWithWeight>,
+    pub threshold:        u32,
+    pub memo:             String,
+}
+```
+
 1.创建多签账户
 
 ```rust
@@ -61,7 +76,7 @@ fn generate_account(&mut self, ctx: ServiceContext, payload: GenerateMultiSigAcc
 // 参数
 pub struct GenerateMultiSigAccountPayload {
     pub owner:            Address,
-    pub autonomy:         bool,
+    pub autonomy:         bool, // 是否需要开启自治：即多签地址创建后的 owner 就是多签地址本身。当开启时， owner 参数失效。
     pub addr_with_weight: Vec<AddressWithWeight>,
     pub threshold:        u32,
     pub memo:             String,

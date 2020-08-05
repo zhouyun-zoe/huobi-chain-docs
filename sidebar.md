@@ -27,6 +27,7 @@
 	- [接口](/graphql_api.md)
 - **SDK**
 	- [JS-SDK](/js_sdk.md)
+	- [JAVA-SDK](/java_sdk.md)
 - **贡献说明**
 	- [贡献说明](/contribute.md)
 - **常见问题**
