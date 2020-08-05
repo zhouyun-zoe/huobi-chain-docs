@@ -128,7 +128,7 @@ OPTIONS:
 
 打开 <http://127.0.0.1:8000/graphiql> 后效果如下图所示：
 
-![](./static/graphiql.png)
+![](./docs-img/graphiql.png)
 
 左边输入 GraphQL 语句，点击中间的执行键，即可在右边看到执行结果。
 
