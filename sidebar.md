@@ -28,7 +28,8 @@
 - **SDK**
 	- [JS-SDK](/js_sdk.md)
 	- [JAVA-SDK](/java_sdk.md)
-- **贡献说明**
-	- [贡献说明](/contribute.md)
-- **常见问题**
+- **参考**
+    - [版本说明](/versions.md)
+	- [Highlight](/highlight.md)
 	- [FAQ](/faq.md)
+	- [贡献说明](/contribute.md)
