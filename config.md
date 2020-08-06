@@ -11,36 +11,16 @@ timestamp = 0
 prevhash = "0x44915be5b6c20b0678cf05fcddbbaa832e25d7e6ac538784cd5c24de00d47472"
 
 [[services]]
-name = "authorization"
-payload = '''
-{
-    "admin": "0xcff1002107105460941f797828f468667aa1a2db",
-    "verified_items": [
-        {
-            "service_name": "admission_control",
-            "method_name": "is_permitted"
-        },
-        {
-            "service_name": "admission_control",
-            "method_name": "is_valid"
-        }
-    ]
-}
-'''
-
-[[services]]
 name = "asset"
 payload = '''
 {
     "id": "0xf56924db538e77bb5951eb5ff0d02b88983c49c45eea30e8ae3e7234b311436c",
-    "name": "Huobi Token Test",
-    "symbol": "HTTest",
+    "name": "HT",
+    "symbol": "HT",
     "supply": 50000000000000000,
     "precision": 8,
-    "issuers": [{"addr": "0xcff1002107105460941f797828f468667aa1a2db", "balance": 50000000000000000}],
-    "fee": 1,
-    "fee_account": "0xcff1002107105460941f797828f468667aa1a2db"
-    "admin": "0xcff1002107105460941f797828f468667aa1a2db",
+    "init_mints": [{"addr": "muta10e0525sfrf53yh2aljmm3sn9jq5njk7llt9agp", "balance": 50000000000000000}],
+    "admin": "muta10e0525sfrf53yh2aljmm3sn9jq5njk7llt9agp",
     "relayable": true
 }
 '''
@@ -50,25 +30,27 @@ name = "metadata"
 payload = '''
 {
     "chain_id": "0xb6a4d7da21443f5e816e8700eea87610e6d769657d6b8ec73028457bf2ca4036",
+    "bech32_address_hrp": "muta",
     "common_ref": "0x703873635a6b51513451",
-    "timeout_gap": 20,
+    "timeout_gap": 99999,
     "cycles_limit": 999999999999,
     "cycles_price": 1,
     "interval": 3000,
     "verifier_list": [
-        {
-            "bls_pub_key": "0x04188ef9488c19458a963cc57b567adde7db8f8b6bec392d5cb7b67b0abc1ed6cd966edc451f6ac2ef38079460eb965e890d1f576e4039a20467820237cda753f07a8b8febae1ec052190973a1bcf00690ea8fc0168b3fbbccd1c4e402eda5ef22",
-            "address": "0xf8389d774afdad8755ef8e629e5a154fddc6325a",
-            "propose_weight": 1,
-            "vote_weight": 1
-        }
+       {
+           "bls_pub_key": "0x04102947214862a503c73904deb5818298a186d68c7907bb609583192a7de6331493835e5b8281f4d9ee705537c0e765580e06f86ddce5867812fceb42eecefd209f0eddd0389d6b7b0100f00fb119ef9ab23826c6ea09aadcc76fa6cea6a32724",
+           "pub_key": "0x02ef0cb0d7bc6c18b4bea1f5908d9106522b35ab3c399369605d4242525bda7e60",
+           "address": "muta14e0lmgck835vm2dfm0w3ckv6svmez8fdgdl705",
+           "propose_weight": 1,
+           "vote_weight": 1
+       }
     ],
     "propose_ratio": 15,
     "prevote_ratio": 10,
     "precommit_ratio": 10,
     "brake_ratio": 7,
-    "tx_num_limit": 20000,
-    "max_tx_size": 1048576
+    "tx_num_limit": 9000,
+    "max_tx_size": 10485760
 }
 '''
 
@@ -77,7 +59,7 @@ name = "governance"
 payload = '''
 {
     "info": {
-        "admin": "0xcff1002107105460941f797828f468667aa1a2db",
+        "admin": "muta10e0525sfrf53yh2aljmm3sn9jq5njk7llt9agp",
         "tx_failure_fee": 1000,
         "tx_floor_fee": 100,
         "profit_deduct_rate_per_million": 10,
@@ -86,24 +68,23 @@ payload = '''
         ],
         "miner_benefit": 3
     },
-    "tx_fee_inlet_address": "0xcff1002107105460941f797828f468667aa1a2db",
-    "miner_profit_outlet_address": "0x9cccacbb8a4b0353d42138613b2db72d6a661cf4",
+    "miner_profit_outlet_address": "muta1dqf7hymzxuhw7csq7wcahslcr9n3ewnfz42ts0",
     "miner_charge_map": [
-        {"address": "0x9cccacbb8a4b0353d42138613b2db72d6a661cf4", "miner_charge_address": "0x9cccacbb8a4b0353d42138613b2db72d6a661cf4"}
+        {"address": "muta1dqf7hymzxuhw7csq7wcahslcr9n3ewnfz42ts0", "miner_charge_address": "muta1dqf7hymzxuhw7csq7wcahslcr9n3ewnfz42ts0"}
     ]
 }
 '''
 
-# you can enable whitelist in riscv with init payload below
-[[services]]
-name = 'riscv'
-payload = '''
-{
-    "enable_authorization": true,
-    "admins": ["0xcff1002107105460941f797828f468667aa1a2db"],
-    "deploy_auth": ["0x9cccacbb8a4b0353d42138613b2db72d6a661cf4"]
-}
-'''
+# # you can enable whitelist in riscv with init payload below
+# [[services]]
+# name = 'riscv'
+# payload = '''
+# {
+#     "enable_authorization": true,
+#     "admins": ["muta1elcsqgg8zp2xp9ql09uz3argvea2rgkmglwr47"],
+#     "deploy_auth": ["muta1nnx2ewu2fvp484pp8psnktdh944xv885nkwpvu"]
+# }
+# '''
 
 [[services]]
 name = "kyc"
@@ -111,9 +92,9 @@ payload = '''
 {
    "org_name": "huobi",
    "org_description": "",
-   "org_admin": "0xcff1002107105460941f797828f468667aa1a2db",
+   "org_admin": "muta10e0525sfrf53yh2aljmm3sn9jq5njk7llt9agp",
    "supported_tags": [ "name", "gender", "age" ],
-   "service_admin": "0xcff1002107105460941f797828f468667aa1a2db"
+   "service_admin": "muta10e0525sfrf53yh2aljmm3sn9jq5njk7llt9agp"
 }
 '''
 
@@ -121,8 +102,8 @@ payload = '''
 name = "admission_control"
 payload = '''
 {
-   "admin": "0xcff1002107105460941f797828f468667aa1a2db",
-   "deny_list": [ "0xd2d268749ffe54def4e2e73e5e06a4ebf0d6f585" ]
+   "admin": "muta10e0525sfrf53yh2aljmm3sn9jq5njk7llt9agp",
+   "deny_list": [ "muta16tfxsaylle2daa8zuul9up4ya0cddav9h4chyk" ]
 }
 '''
 ```
@@ -134,7 +115,7 @@ payload = '''
 
 `services` 为各个 service 的初始化参数。各 service 的初始化参数说明：
 
-- `authorization`:Authorization Service 是被交易池调用，对交易进行检查的 service。Authorization Service 本身不提供任何的检查逻辑，而是去调用注册在其中的 service 及其对应的方法进行校验。默认配置下，是在 Authorization Service 中注册了两个检查项，分别是 admission_control service 中的 `is_permitted` 方法和 `admission_control service` 中的 is_valid 方法
+- `authorization`: Authorization Service 是被交易池调用，对交易进行检查的 service。Authorization Service 本身不提供任何的检查逻辑，而是去调用注册在其中的 service 及其对应的方法进行校验。默认配置下，是在 Authorization Service 中注册了两个检查项，分别是 admission_control service 中的 `is_permitted` 方法和 `admission_control service` 中的 is_valid 方法
   - `admin`: 管理员，可以对注册的检查项进行增删
   - `verified_items`:
     - `service_name`:注册的 service
@@ -146,14 +127,15 @@ payload = '''
   - `symbol`: 资产简称
   - `supply`: 资产发行总量
   - `precision`: 资产精度
-  - `issuer`: 预存资产的地址，在产生创世块的时候，将会在这些地址预存对应数量的代币
-  - `fee`: 当前版本已被废弃
-  - `fee_account`: 当前版本已被废弃
+  - `init_mints`
+    - `addr`: 预存资产的地址，可填写多地址，在产生创世块的时候，将会在这些地址预存对应数量的代币
+    - `balance`: 资产数量
   - `admin`: 管理员地址
   - `relayable`: asset 能否调用 `relay` 方法销毁资产
 
 - `metadata`: 链的元数据，必须填写
   - `chain_id`: 链唯一 id，建议设置为任意 hash
+  - `bech32_address_hrp`: 链上地址的抬头，人类可读部分，创世块后不允许修改，注意需要符合 bech32 hrp 的规范 
   - `common_ref`: BLS 签名需要
   - `timeout_gap`: 交易池能接受的最大超时块范围。用户在发送交易的时候，需要填写 `timeout` 字段，表示块高度超过这个值后，如果该交易还没有被打包，则以后都不会被打包，这样可以确保之前的某笔交易超时后一定会失败，避免用户的交易很长时间未被打包后换 `nonce` 重发交易，结果两笔交易都上链的情况。当用户填写的 `timeout` > `chain_current_height` + `timeout_gap` 时，交易池会拒绝这笔交易。考虑到一些特殊情况（比如一些冷钱包对交易签名后较长时间才发出），该值可以适当调大
   - `cycles_limit`: 10进制，链级别对单个交易可以消耗的最大 `cycle` 的限制
@@ -161,6 +143,7 @@ payload = '''
   - `interval`: 出块间隔，单位为 ms。当设置为 3s 的时候，出块间隔并不是严格的 3s，而是在 3s 附近波动，这是因为 Overlord 共识在响应性上的优化。当网络状况较好的时候，会小于 3s，网络情况较差，则会略大于 3s。
   - `verifier_list`: 共识列表
     - `bls_pub_key`: 节点的 BLS 公钥
+    - `pub_key`: 节点的公钥
     - `address`: 节点的地址
     - `propose_weight`: 节点的出块权重。如果有四个共识节点，出块权重分别为 `1, 2, 3, 4`，则第一个节点的出块概率为 `1 / (1 + 2 + 3 + 4)`。投票权重的逻辑类似。
     - `vote_weight`: 节点的投票权重
@@ -179,8 +162,7 @@ payload = '''
   - `tx_fee_discount`:
     - `threshold`: 用户账户余额的阈值
     - `discount_percent`: 折扣率
-  - `miner_benefit`: 矿工奖励（每出一个块，矿工收取的 HT 数量）
-  - `tx_fee_inlet_address`: 手续费收取的地址
+    - `miner_benefit`: 矿工奖励（每出一个块，矿工收取的 HT 数量）
   - `miner_profit_outlet_address`: 该地址需预存一定数量的 HT，从该地址把矿工奖励分发给矿工
   - `miner_charge_map`:
     - `address`: 矿工地址
@@ -208,7 +190,7 @@ payload = '''
 
 ```toml
 # crypto
-privkey = "0x45c56be699dca666191ad3446897e0f480da234da896270202514a0e1a587c3f"
+privkey = "0x5ec982173d54d830b6789cbbbe43eaa2853a5ff752d1ebc1b266cf9790314f8a"
 
 # db config
 data_path = "./data"
@@ -226,7 +208,7 @@ listening_address = "0.0.0.0:1337"
 rpc_timeout = 10
 
 [[network.bootstraps]]
-pubkey = "0x031288a6788678c25952eba8693b2f278f66e2187004b64ac09416d07f83f96d5b"
+peer_id = "QmTEJkB5QKWsEq37huryZZfVvqBKb54sHnKn9TQcA6j3n9"
 address = "0.0.0.0:1888"
 
 [mempool]
@@ -268,7 +250,7 @@ max_open_files = 1024
   - `listening_address`: 链 p2p 网络监听地址
   - `rpc_timeout`: RPC 调用（例如从其它节点拉交易）超时时间，单位为秒
 - `network.bootstraps`: 起链时连接的初始节点信息
-  - `pubkey`: 公钥
+  - `peer_id`: 从公钥哈希到 base58 的一个 peer id
   - `address`: 网络地址
 - `mempool`: 交易池相关配置
   - `pool_size`: 交易池大小
@@ -286,6 +268,23 @@ max_open_files = 1024
   - `modules_level`: 对特定模块指定不同于全局的日志级别
 - `rocksdb`:
   - `max_open_files`: rocksdb 允许打开的文件描述符（FD）的最大值
+- `APM parameters`: Application Performace Monitor，用以监控系统全链路性能
+  - `service_name`: 需要监控的服务
+  - `tracing_address`: 需要将监控数据推送至服务器的地址
+  - `tracing_batch_size`: 分批推送，每一次分批的大小
+
+## 出块方式配置
+
+Overlord 提供两种出块逻辑，随机出块和轮询出块。随机出块根据节点的 `propose_weight` 使用确定性随机算法选择 leader，按照 `vote_weight` 进行计票。轮询出块轮流选择 leader，所以这时 `propose_weight` 是不生效的。轮询出块也是按照 `vote_weight` 进行计票。
+Muta 中有随机出块特性的开关， 通过 `features = ["random_leader"]` 开启，在 muta-chain 中，默认是使用随机出块的。在使用 Muta 框架进行开发的时候，在 `Cargo.toml` 中的 muta 依赖中可以选择出块方式：
+
+```rust
+# 轮询出块
+muta = { git = "https://github.com/nervosnetwork/muta", branch = "master" }
+# 随机出块
+muta = { git = "https://github.com/nervosnetwork/muta", branch = "master", features = ["random_leader"] }
+```
+
 
 ## 日志示例
 
