@@ -16,7 +16,7 @@ For the blockchain of the UTXO model, the new state is implicit in the transacti
 For the Account model, in order to implement the second semantic, the common method is to let the consensus nodes execute all the transactions firstly. In this step, the latest state could be calculated and be saved to the block header. And then, consensus node will broadcast the block in which the transaction is sequenced.  Once the consensus is achieved,  the state and the transaction sequence is determined among all the nodes.  
 However, this method restricts the transaction processing capability of the BFT-like consensus algorithm. As shown in the figure below, Only after the block B(h)(h means the block height) reaches a consensus, the new leader can pack and execute B（h+1），and then broadcast B(h+1). After receiving B(h+1), other consensus nodes need to execute B(h+1) again to verify its correctness. So, in this process, these two serial block execution processes slowed down the consensus efficiency.
 
-<div align=center><img src="../static/block_process.png"></div>
+<div align=center><img src="../docs-img/block_process.png"></div>
 
 An improved method is that the Leader does not execute the block immediately after packing the new block. After the block reaches a consensus, the consensus node executes the block to generate a new state, and the next height leader will pack this state and the next height blocks together to participate in the next consensus process. This method saves one block execution process time.
 
@@ -38,7 +38,7 @@ We use B(h, S, T) to represent a block of height h, which contains a state of S,
 
 In Overlord, a consensus process is called a block. The block contains two parts, Header and Body (as shown below). The core structure of block is shown below, `height` is a monotonically increasing value, equivalent to height; `prev_hash` is the hash of the previous block; `order_root` is the merkle root of all pending transactions contained in the Body; `state_root` represents the latest world The MPT root of the state; `confirm_roots` represents the `order_root` collection from the `state_root` of the previous block to the `state_root` of the current block; the `receipt_roots` records the `receipt_root` corresponding to each `order_root` being executed; proof is proof of the previous block .
 
-<div align=center><img src="../static/block.png"></div>
+<div align=center><img src="../docs-img/block.png"></div>
 
 In this method, the consensus module batches the transactions to make a consensus. After the consensus is reached, the ordered transaction set is added to the queue to be executed, and the execution module executes in order of the transaction set, and each execution of the transaction set is performed. The ordered root of the transaction set to be executed, and the executed stateRoot are sent to the consensus module. When packing the transactions to assemble the block, the leader take the latest state_root as the latest state to participate in the consensus.
 
@@ -77,7 +77,7 @@ The Overlord consensus consists of the following components:
 
 In the Overlord consensus architecture, when a message is received, the state storage module performs a basic check on the message. After passing, the status is updated according to the received message and the message is transmitted to the state machine. In addition, a timer is required to maintain activity, and when the timer expires, the timer calls the interface to trigger the state machine. The state machine will throw a current state event after making the state change. The state storage module and the timer module listen to the event thrown by the state machine, and perform corresponding processing according to the monitored event, such as writing Wal, sending a vote, setting the timing. And so on. At the time of the restart, the state storage module reads the data from the Wal and sends it to the state machine. The overall architecture is shown below:
 
-<div align=center><img src="../static/arch_overlord.png"></div>
+<div align=center><img src="../docs-img/arch_overlord.png"></div>
 
 ### Consensus State Machine (SMR)
 
@@ -113,7 +113,7 @@ All nodes commit the proposal
 
 The state transition diagram of the consensus state machine is shown below:
 
-<div align=center><img src="../static/state_transition.png"></div>
+<div align=center><img src="../docs-img/state_transition.png"></div>
 
 In the project, we combine the pre-voting phase and the verification phase into one phase, sharing a timeout. When the state machine receives the aggregated voting and verification results, it enters the pre-commit phase.
 
