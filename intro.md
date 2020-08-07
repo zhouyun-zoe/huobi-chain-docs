@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/HuobiGroup/huobi-chain">
-    <img src="./static/r-huobichain.jpeg" width="550">
+    <img src="./docs-img/r-huobichain.jpeg" width="550">
   </a>
   <h3 align="center">让金融更高效，让财富更自由</h3>
   <p align="center">
