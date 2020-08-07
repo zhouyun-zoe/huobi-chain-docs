@@ -1,7 +1,7 @@
 
 <p align="center">
   <a href="https://lhammer.cn/You-need-to-know-css/#/">
-    <img src="./static/r-huobichain.jpeg" width="550">
+    <img src="./docs-img/r-huobichain.jpeg" width="550">
   </a>
   <h3 align="center">The next generation high performance public chain</h3>
   <p align="center">
